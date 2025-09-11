@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { StudentsDto } from './students.dto';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { StudentsDto, StudentWithUniversityDto } from './students.dto';
+import { UniversitiesService } from '../universities/universities.service';
 
 @Injectable()
 export class StudentsService {
   private students: StudentsDto[] = [];
+
+  constructor(private readonly universitiesService: UniversitiesService) {}
 
   findAll(): StudentsDto[] {
     return this.students;
@@ -13,9 +16,24 @@ export class StudentsService {
     return this.students.find((u) => u.id === id);
   }
 
-  create(dto: StudentsDto): StudentsDto {
+  create(dto: StudentsDto): StudentWithUniversityDto {
+    const university = this.universitiesService.findOne(dto.id_universitate);
+
+    if (!university) {
+      throw new BadRequestException('Universitatea nu există');
+    }
+
     this.students.push(dto);
-    return dto;
+
+    this.universitiesService.incrementStudentCount(dto.id_universitate);
+
+    return {
+      ...dto,
+      universitate: {
+        denumire: university.denumire,
+        adresa: university.adresa,
+      },
+    };
   }
 
   update(id: number, dto: StudentsDto): StudentsDto | undefined {

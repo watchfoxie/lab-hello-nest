@@ -30,4 +30,13 @@ export class UniversitiesService {
   remove(id: number): void {
     this.universities = this.universities.filter((u) => u.id !== id);
   }
+
+  incrementStudentCount(universityId: number): boolean {
+    const university = this.universities.find((u) => u.id === universityId);
+    if (university) {
+      university.numar_studenti += 1;
+      return true;
+    }
+    return false;
+  }
 }

@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { StudentsDto } from './students.dto';
+import { StudentsDto, StudentWithUniversityDto } from './students.dto';
 import { StudentsService } from './students.service';
 
 @ApiTags('students')
@@ -33,7 +33,8 @@ export class StudentsController {
 
   @Post()
   @ApiOperation({ summary: 'Create student' })
-  @ApiResponse({ status: 201, type: StudentsDto })
+  @ApiResponse({ status: 201, type: StudentWithUniversityDto })
+  @ApiResponse({ status: 400, description: 'Universitatea nu există' })
   create(@Body() dto: StudentsDto) {
     return this.studentsService.create(dto);
   }
