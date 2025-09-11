@@ -6,10 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Your API Title')
-    .setDescription('Your API Description')
+    .setTitle('My API for students at university')
+    .setDescription('API for managing student data and resources')
     .setVersion('1.0')
-    .addTag('your-tag') // Optional: Add tags for categorization
+    .addTag('students')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
