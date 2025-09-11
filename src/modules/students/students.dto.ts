@@ -11,6 +11,9 @@ export class StudentsDto {
   prenume: string;
 
   @ApiProperty()
+  id_universitate: number;
+
+  @ApiProperty()
   facultate: string;
 
   @ApiProperty()
