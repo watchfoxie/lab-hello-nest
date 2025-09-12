@@ -9,7 +9,17 @@ export class StudentsService {
   constructor(private readonly universitiesService: UniversitiesService) {}
 
   findAll(): StudentsDto[] {
-    return this.students;
+    return this.students.map((student) => {
+      const university = this.universitiesService.findOne(
+        student.id_universitate,
+      );
+      return {
+        ...student,
+        universitate: university
+          ? { denumire: university.denumire, adresa: university.adresa }
+          : null,
+      };
+    });
   }
 
   findOne(id: number): StudentsDto | undefined {
