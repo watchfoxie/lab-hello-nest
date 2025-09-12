@@ -11,6 +11,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UniversitiesDto } from './universities.dto';
 import { UniversitiesService } from './universities.service';
+import { ValidationPipe } from '../../pipes/validation.pipe';
 
 @ApiTags('universities')
 @Controller('universities')
@@ -34,7 +35,7 @@ export class UniversitiesController {
   @Post()
   @ApiOperation({ summary: 'Create university' })
   @ApiResponse({ status: 201, type: UniversitiesDto })
-  create(@Body() dto: UniversitiesDto) {
+  create(@Body(new ValidationPipe()) dto: UniversitiesDto) {
     return this.universitiesService.create(dto);
   }
 
