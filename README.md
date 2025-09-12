@@ -1,11 +1,7 @@
 
 <div align="center">
-  <a href="https://nestjs.com/" target="_blank">
-    <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />
-  </a>
-  <a href="https://github.com/watchfoxie/lab-hello-nest" target="_blank">
-    <img src="https://i.imgur.com/hPSFzKq.png" width="200" alt="US logo" />
-  </a>
+  <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />
+  <img src="https://i.imgur.com/hPSFzKq.png" width="200" alt="US logo" />
   <h2>Un framework Node.js progresiv pentru dezvoltarea de aplicații server-side eficiente și scalabile.</h2>
   <a href="https://www.npmjs.com/package/@nestjs/core"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
   <a href="https://www.npmjs.com/package/@nestjs/core"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
