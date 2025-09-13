@@ -1,0 +1,17 @@
+export const HTTP_STATUS_CODES = {
+  100: 'Serverul a primit cererea',
+  101: 'Serverul schimbă protocolul',
+  200: 'OK',
+  201: 'Creat',
+  204: 'Nicio resursă găsită / Resursă ștearsă cu succes',
+  301: 'Resursa a fost mutată permanent',
+  302: 'Resursa a fost mutată temporar',
+  400: 'Cerere incorectă',
+  401: 'Neautorizat',
+  403: 'Interzis',
+  404: 'Resursa nu a fost găsită',
+  500: 'Eroare internă a serverului',
+  502: 'Gateway rău',
+  503: 'Serviciu indisponibil',
+  504: 'Timp de așteptare al gateway-ului',
+};

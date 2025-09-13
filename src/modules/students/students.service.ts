@@ -30,7 +30,9 @@ export class StudentsService {
     const university = this.universitiesService.findOne(dto.id_universitate);
 
     if (!university) {
-      throw new BadRequestException('Universitatea nu există');
+      throw new BadRequestException(
+        'Universitatea nu există, fie ați greșit id-ul asociat',
+      );
     }
 
     this.students.push(dto);
