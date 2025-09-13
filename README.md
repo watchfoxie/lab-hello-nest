@@ -26,7 +26,7 @@ npm install
 # modul dezvoltare
 npm run start
 
-# modul watch
+# modul watch (adițional: nodemon)
 npm run start:dev
 
 # modul producție
