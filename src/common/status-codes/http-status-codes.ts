@@ -1,17 +1,23 @@
+// Coduri de status HTTP
 export const HTTP_STATUS_CODES = {
-  100: 'Serverul a primit cererea',
-  101: 'Serverul schimbă protocolul',
-  200: 'OK',
-  201: 'Creat',
-  204: 'Nicio resursă găsită / Resursă ștearsă cu succes',
-  301: 'Resursa a fost mutată permanent',
-  302: 'Resursa a fost mutată temporar',
-  400: 'Cerere incorectă',
-  401: 'Neautorizat',
-  403: 'Interzis',
-  404: 'Resursa nu a fost găsită',
+  // 2xx - Succes
+  200: 'Cererea a fost procesată cu succes',
+  201: 'Resursa a fost creată cu succes',
+  204: 'Cererea a fost procesată, dar nu există conținut de returnat',
+
+  // 4xx - Erori de client
+  400: 'Cerere incorectă - datele trimise sunt invalide',
+  401: 'Neautorizat - autentificarea este necesară',
+  403: 'Interzis - accesul la resursă este refuzat',
+  404: 'Resursa solicitată nu a fost găsită',
+  409: 'Conflict - resursa există deja sau este în conflict',
+  422: 'Entitate neprocesabilă - validarea datelor a eșuat',
+
+  // 5xx - Erori de server
   500: 'Eroare internă a serverului',
-  502: 'Gateway rău',
-  503: 'Serviciu indisponibil',
-  504: 'Timp de așteptare al gateway-ului',
-};
+  502: 'Gateway defect',
+  503: 'Serviciu indisponibil temporar',
+  504: 'Timeout la gateway',
+} as const;
+
+export type HttpStatusCode = keyof typeof HTTP_STATUS_CODES;

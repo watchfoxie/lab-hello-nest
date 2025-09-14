@@ -1,12 +1,12 @@
 import {
   Controller,
+  Body,
+  Param,
+  ParseIntPipe,
   Get,
   Post,
   Put,
   Delete,
-  Body,
-  Param,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
@@ -25,7 +25,7 @@ export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all students' })
+  @ApiOperation({ summary: 'Afișați lista tuturor studenților' })
   @ApiResponse({ type: [StudentsDto] })
   @ApiStandardResponses([StudentsDto])
   findAll() {
@@ -44,7 +44,7 @@ export class StudentsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get student by id' })
+  @ApiOperation({ summary: 'Afișați un student după ID' })
   @ApiResponse({ type: StudentsDto })
   @ApiStandardResponses(StudentsDto)
   findOne(@Param('id', ParseIntPipe) id: number) {
@@ -62,7 +62,7 @@ export class StudentsController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create student' })
+  @ApiOperation({ summary: 'Adăugați un student nou' })
   @ApiResponse({ type: StudentWithUniversityDto })
   @ApiStandardResponses(StudentWithUniversityDto)
   create(@Body(new ValidationPipe()) dto: StudentsCreateDto) {
@@ -70,7 +70,7 @@ export class StudentsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update student' })
+  @ApiOperation({ summary: 'Actualizați informațiile unui student' })
   @ApiResponse({ type: StudentsDto })
   @ApiStandardResponses(StudentsDto)
   update(
@@ -91,7 +91,7 @@ export class StudentsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete student' })
+  @ApiOperation({ summary: 'Ștergeți un student' })
   @ApiStandardResponses()
   remove(@Param('id', ParseIntPipe) id: number) {
     const removed = this.studentsService.remove(id);

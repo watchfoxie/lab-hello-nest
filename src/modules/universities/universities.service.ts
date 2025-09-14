@@ -4,60 +4,58 @@ import {
   UniversitiesCreateDto,
   UniversitiesUpdateDto,
 } from './universities.dto';
+import { BaseService } from '../../common/base/base.service';
 
 @Injectable()
-export class UniversitiesService {
-  private universities: UniversitiesDto[] = [];
-
-  findAll(): UniversitiesDto[] {
-    return this.universities;
+export class UniversitiesService extends BaseService<
+  UniversitiesDto,
+  UniversitiesCreateDto,
+  UniversitiesUpdateDto
+> {
+  // Alias pentru a menține compatibilitatea
+  get universities(): UniversitiesDto[] {
+    return this.entities;
   }
-
-  findOne(id: number): UniversitiesDto | undefined {
-    return this.universities.find((u) => u.id === id);
-  }
-
-  private nextId = 0;
 
   create(dto: UniversitiesCreateDto): UniversitiesDto {
     const university: UniversitiesDto = {
-      id: this.nextId++,
+      id: this.getNextId(),
       denumire: dto.denumire,
       adresa: dto.adresa,
       numar_studenti: 0,
     };
-    this.universities.push(university);
+    this.entities.push(university);
     return university;
   }
 
   update(id: number, dto: UniversitiesUpdateDto): UniversitiesDto | undefined {
-    const index = this.universities.findIndex((u) => u.id === id);
+    const index = this.findIndex(id);
     if (index > -1) {
-      this.universities[index] = {
-        ...this.universities[index],
+      this.entities[index] = {
+        ...this.entities[index],
         denumire: dto.denumire,
         adresa: dto.adresa,
       };
-      return this.universities[index];
+      return this.entities[index];
     }
     return undefined;
   }
 
   remove(id: number): UniversitiesDto | string | undefined {
-    const index = this.universities.findIndex((u) => u.id === id);
+    const index = this.findIndex(id);
     if (index > -1) {
-      const university = this.universities[index];
+      const university = this.entities[index];
       if (university.numar_studenti > 0) {
         return 'Universitatea nu poate fi ștearsă deoarece are studenți asociați.';
       }
-      const removed = this.universities[index];
-      this.universities.splice(index, 1);
+      const removed = this.entities[index];
+      this.entities.splice(index, 1);
       return removed;
     }
     return undefined;
   }
   decrementStudentCount(universityId: number): boolean {
-    const university = this.universities.find((u) => u.id === universityId);
+    const university = this.findOne(universityId);
     if (university && university.numar_studenti > 0) {
       university.numar_studenti -= 1;
       return true;
@@ -66,7 +64,7 @@ export class UniversitiesService {
   }
 
   incrementStudentCount(universityId: number): boolean {
-    const university = this.universities.find((u) => u.id === universityId);
+    const university = this.findOne(universityId);
     if (university) {
       university.numar_studenti += 1;
       return true;

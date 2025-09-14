@@ -1,118 +1,87 @@
 import {
   Controller,
+  Body,
+  Param,
+  ParseIntPipe,
   Get,
   Post,
   Put,
   Delete,
-  Body,
-  Param,
-  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import {
   UniversitiesDto,
   UniversitiesCreateDto,
   UniversitiesUpdateDto,
 } from './universities.dto';
 import { UniversitiesService } from './universities.service';
+import {
+  BaseController,
+  ApiResponseMessages,
+} from '../../common/base/base.controller';
 import { ValidationPipe } from '../../pipes/validation.pipe';
 import { ApiStandardResponses } from '../../common/swagger/swagger-responses.util';
 
+const UNIVERSITIES_MESSAGES: ApiResponseMessages = {
+  noEntitiesFound: 'Nu sunt universități adăugate în baza de date!',
+  entitiesList: 'Lista universităților:',
+  entityNotFound: 'Nu există universitate cu id-ul specificat!',
+  entityFound: 'Universitatea găsită:',
+  entityUpdated: 'Universitate actualizată cu succes!',
+  entityDeleted: 'Universitate ștearsă cu succes!',
+};
+
 @ApiTags('universities')
 @Controller('universities')
-export class UniversitiesController {
-  constructor(private readonly universitiesService: UniversitiesService) {}
+export class UniversitiesController extends BaseController<
+  UniversitiesDto,
+  UniversitiesCreateDto,
+  UniversitiesUpdateDto
+> {
+  constructor(private readonly universitiesService: UniversitiesService) {
+    super(universitiesService, UNIVERSITIES_MESSAGES, 'universities');
+  }
 
   @Get()
-  @ApiOperation({ summary: 'Get all universities' })
+  @ApiOperation({ summary: 'Afișați lista tuturor universităților' })
   @ApiResponse({ type: [UniversitiesDto] })
   @ApiStandardResponses([UniversitiesDto])
   findAll() {
-    const universities = this.universitiesService.findAll();
-    if (universities.length === 0) {
-      return {
-        message: 'Nu sunt universități adăugate în baza de date!',
-        universities: [],
-      };
-    } else {
-      return {
-        message: 'Lista universităților:',
-        universities: [...universities],
-      };
-    }
+    return super.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get university by id' })
+  @ApiOperation({ summary: 'Afișați o universitate după ID' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   findOne(@Param('id', ParseIntPipe) id: number) {
-    const university = this.universitiesService.findOne(id);
-    if (!university) {
-      return {
-        message: 'Nu există universitate cu id-ul specificat!',
-        university: null,
-      };
-    }
-    return {
-      message: 'Universitatea găsită:',
-      university,
-    };
+    return super.findOne(id);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create university' })
+  @ApiOperation({ summary: 'Adăugați o nouă universitate' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   @ApiResponse({ status: 201, description: 'Universitate adăugată cu succes' })
-  create(
-    @Body(new ValidationPipe())
-    dto: UniversitiesCreateDto,
-  ) {
-    return this.universitiesService.create(dto);
+  create(@Body(new ValidationPipe()) dto: UniversitiesCreateDto) {
+    return super.create(dto);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update university' })
+  @ApiOperation({ summary: 'Actualizați informațiile unei universități' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UniversitiesUpdateDto,
+    @Body(new ValidationPipe()) dto: UniversitiesUpdateDto,
   ) {
-    const updated = this.universitiesService.update(id, dto);
-    if (!updated) {
-      return {
-        message: 'Nu există universitate cu id-ul specificat!',
-        university: null,
-      };
-    }
-    return {
-      message: 'Universitate actualizată cu succes!',
-      university: updated,
-    };
+    return super.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete university' })
+  @ApiOperation({ summary: 'Ștergeți o universitate' })
   @ApiStandardResponses()
   remove(@Param('id', ParseIntPipe) id: number) {
-    const removed = this.universitiesService.remove(id);
-    if (!removed) {
-      return {
-        message: 'Nu există universitate cu id-ul specificat!',
-        university: null,
-      };
-    }
-    if (typeof removed === 'string') {
-      return {
-        message: removed,
-        university: null,
-      };
-    }
-    return {
-      message: 'Universitate ștearsă cu succes!',
-      university: removed,
-    };
+    return super.remove(id);
   }
 }
