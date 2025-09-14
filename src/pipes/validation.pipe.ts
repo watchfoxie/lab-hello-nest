@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import {
   PipeTransform,
   Injectable,
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -19,9 +17,15 @@ export class ValidationPipe implements PipeTransform<unknown> {
       return value;
     }
     const object = plainToInstance(metatype, value) as object;
-    const errors = (await validate(object)) as ValidationError[];
+    const errors = await validate(object);
     if (Array.isArray(errors) && errors.length > 0) {
-      throw new BadRequestException('Validation failed');
+      const messages = errors
+        .map(
+          (err) =>
+            `câmp ${err.property.toUpperCase()}: ${Object.values(err.constraints ?? {}).join(', ')}`,
+        )
+        .join('; ');
+      throw new BadRequestException(`Validarea a eșuat: ${messages}`);
     }
     return value;
   }

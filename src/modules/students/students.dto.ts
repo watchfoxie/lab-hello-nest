@@ -3,63 +3,63 @@ import { IsInt, IsString } from 'class-validator';
 
 export class StudentsDto {
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'ID-ul trebuie să fie un număr întreg!' })
   id: number;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
   nume: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
   prenume: string;
 
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'ID-ul universității trebuie să fie un număr întreg!' })
   id_universitate: number;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
   facultate: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
   specialitate: string;
 }
 
 export class UniversityInfoDto {
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Denumirea trebuie să fie un șir de caractere!' })
   denumire: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Adresa trebuie să fie un șir de caractere!' })
   adresa: string;
 }
 
 export class StudentWithUniversityDto {
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'ID-ul trebuie să fie un număr întreg!' })
   id: number;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
   nume: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
   prenume: string;
 
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'ID-ul universității trebuie să fie un număr întreg!' })
   id_universitate: number;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
   facultate: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
   specialitate: string;
 
   @ApiProperty({ type: UniversityInfoDto })

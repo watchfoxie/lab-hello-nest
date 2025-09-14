@@ -3,18 +3,18 @@ import { IsInt, IsString } from 'class-validator';
 
 export class UniversitiesDto {
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'ID-ul trebuie să fie un număr întreg!' })
   id: number;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Denumirea trebuie să fie un șir de caractere!' })
   denumire: string;
 
   @ApiProperty()
-  @IsString()
+  @IsString({ message: 'Adresa trebuie să fie un șir de caractere!' })
   adresa: string;
 
   @ApiProperty()
-  @IsInt()
+  @IsInt({ message: 'Numărul de studenți trebuie să fie un număr întreg!' })
   numar_studenti: number;
 }
