@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StudentsDto, StudentWithUniversityDto } from './students.dto';
 import { StudentsService } from './students.service';
 import { ValidationPipe } from '../../pipes/validation.pipe';
-import { HTTP_STATUS_CODES } from 'src/common/status-codes/http-status-codes';
+import { ApiStandardResponses } from '../../common/swagger/swagger-responses.util';
 
 @ApiTags('students')
 @Controller('students')
@@ -22,20 +22,7 @@ export class StudentsController {
   @Get()
   @ApiOperation({ summary: 'Get all students' })
   @ApiResponse({ type: [StudentsDto] })
-  @ApiResponse({ status: 100, description: HTTP_STATUS_CODES[100] })
-  @ApiResponse({ status: 101, description: HTTP_STATUS_CODES[101] })
-  @ApiResponse({ status: 200, description: HTTP_STATUS_CODES[200] })
-  @ApiResponse({ status: 204, description: HTTP_STATUS_CODES[204] })
-  @ApiResponse({ status: 301, description: HTTP_STATUS_CODES[301] })
-  @ApiResponse({ status: 302, description: HTTP_STATUS_CODES[302] })
-  @ApiResponse({ status: 400, description: HTTP_STATUS_CODES[400] })
-  @ApiResponse({ status: 401, description: HTTP_STATUS_CODES[401] })
-  @ApiResponse({ status: 403, description: HTTP_STATUS_CODES[403] })
-  @ApiResponse({ status: 404, description: HTTP_STATUS_CODES[404] })
-  @ApiResponse({ status: 500, description: HTTP_STATUS_CODES[500] })
-  @ApiResponse({ status: 502, description: HTTP_STATUS_CODES[502] })
-  @ApiResponse({ status: 503, description: HTTP_STATUS_CODES[503] })
-  @ApiResponse({ status: 504, description: HTTP_STATUS_CODES[504] })
+  @ApiStandardResponses([StudentsDto])
   findAll() {
     return this.studentsService.findAll();
   }
@@ -43,20 +30,7 @@ export class StudentsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get student by id' })
   @ApiResponse({ type: StudentsDto })
-  @ApiResponse({ status: 100, description: HTTP_STATUS_CODES[100] })
-  @ApiResponse({ status: 101, description: HTTP_STATUS_CODES[101] })
-  @ApiResponse({ status: 200, description: HTTP_STATUS_CODES[200] })
-  @ApiResponse({ status: 204, description: HTTP_STATUS_CODES[204] })
-  @ApiResponse({ status: 301, description: HTTP_STATUS_CODES[301] })
-  @ApiResponse({ status: 302, description: HTTP_STATUS_CODES[302] })
-  @ApiResponse({ status: 400, description: HTTP_STATUS_CODES[400] })
-  @ApiResponse({ status: 401, description: HTTP_STATUS_CODES[401] })
-  @ApiResponse({ status: 403, description: HTTP_STATUS_CODES[403] })
-  @ApiResponse({ status: 404, description: HTTP_STATUS_CODES[404] })
-  @ApiResponse({ status: 500, description: HTTP_STATUS_CODES[500] })
-  @ApiResponse({ status: 502, description: HTTP_STATUS_CODES[502] })
-  @ApiResponse({ status: 503, description: HTTP_STATUS_CODES[503] })
-  @ApiResponse({ status: 504, description: HTTP_STATUS_CODES[504] })
+  @ApiStandardResponses(StudentsDto)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.findOne(id);
   }
@@ -64,20 +38,7 @@ export class StudentsController {
   @Post()
   @ApiOperation({ summary: 'Create student' })
   @ApiResponse({ type: StudentWithUniversityDto })
-  @ApiResponse({ status: 100, description: HTTP_STATUS_CODES[100] })
-  @ApiResponse({ status: 101, description: HTTP_STATUS_CODES[101] })
-  @ApiResponse({ status: 200, description: HTTP_STATUS_CODES[200] })
-  @ApiResponse({ status: 204, description: HTTP_STATUS_CODES[204] })
-  @ApiResponse({ status: 301, description: HTTP_STATUS_CODES[301] })
-  @ApiResponse({ status: 302, description: HTTP_STATUS_CODES[302] })
-  @ApiResponse({ status: 400, description: HTTP_STATUS_CODES[400] })
-  @ApiResponse({ status: 401, description: HTTP_STATUS_CODES[401] })
-  @ApiResponse({ status: 403, description: HTTP_STATUS_CODES[403] })
-  @ApiResponse({ status: 404, description: HTTP_STATUS_CODES[404] })
-  @ApiResponse({ status: 500, description: HTTP_STATUS_CODES[500] })
-  @ApiResponse({ status: 502, description: HTTP_STATUS_CODES[502] })
-  @ApiResponse({ status: 503, description: HTTP_STATUS_CODES[503] })
-  @ApiResponse({ status: 504, description: HTTP_STATUS_CODES[504] })
+  @ApiStandardResponses(StudentWithUniversityDto)
   create(@Body(new ValidationPipe()) dto: StudentsDto) {
     return this.studentsService.create(dto);
   }
@@ -85,40 +46,14 @@ export class StudentsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update student' })
   @ApiResponse({ type: StudentsDto })
-  @ApiResponse({ status: 100, description: HTTP_STATUS_CODES[100] })
-  @ApiResponse({ status: 101, description: HTTP_STATUS_CODES[101] })
-  @ApiResponse({ status: 200, description: HTTP_STATUS_CODES[200] })
-  @ApiResponse({ status: 204, description: HTTP_STATUS_CODES[204] })
-  @ApiResponse({ status: 301, description: HTTP_STATUS_CODES[301] })
-  @ApiResponse({ status: 302, description: HTTP_STATUS_CODES[302] })
-  @ApiResponse({ status: 400, description: HTTP_STATUS_CODES[400] })
-  @ApiResponse({ status: 401, description: HTTP_STATUS_CODES[401] })
-  @ApiResponse({ status: 403, description: HTTP_STATUS_CODES[403] })
-  @ApiResponse({ status: 404, description: HTTP_STATUS_CODES[404] })
-  @ApiResponse({ status: 500, description: HTTP_STATUS_CODES[500] })
-  @ApiResponse({ status: 502, description: HTTP_STATUS_CODES[502] })
-  @ApiResponse({ status: 503, description: HTTP_STATUS_CODES[503] })
-  @ApiResponse({ status: 504, description: HTTP_STATUS_CODES[504] })
+  @ApiStandardResponses(StudentsDto)
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: StudentsDto) {
     return this.studentsService.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete student' })
-  @ApiResponse({ status: 100, description: HTTP_STATUS_CODES[100] })
-  @ApiResponse({ status: 101, description: HTTP_STATUS_CODES[101] })
-  @ApiResponse({ status: 200, description: HTTP_STATUS_CODES[200] })
-  @ApiResponse({ status: 204, description: HTTP_STATUS_CODES[204] })
-  @ApiResponse({ status: 301, description: HTTP_STATUS_CODES[301] })
-  @ApiResponse({ status: 302, description: HTTP_STATUS_CODES[302] })
-  @ApiResponse({ status: 400, description: HTTP_STATUS_CODES[400] })
-  @ApiResponse({ status: 401, description: HTTP_STATUS_CODES[401] })
-  @ApiResponse({ status: 403, description: HTTP_STATUS_CODES[403] })
-  @ApiResponse({ status: 404, description: HTTP_STATUS_CODES[404] })
-  @ApiResponse({ status: 500, description: HTTP_STATUS_CODES[500] })
-  @ApiResponse({ status: 502, description: HTTP_STATUS_CODES[502] })
-  @ApiResponse({ status: 503, description: HTTP_STATUS_CODES[503] })
-  @ApiResponse({ status: 504, description: HTTP_STATUS_CODES[504] })
+  @ApiStandardResponses()
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.studentsService.remove(id);
   }
