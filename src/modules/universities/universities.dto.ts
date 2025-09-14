@@ -1,6 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsString } from 'class-validator';
 
+export class UniversitiesCreateDto {
+  @ApiProperty()
+  @IsString({ message: 'Denumirea trebuie să fie un șir de caractere!' })
+  denumire: string;
+
+  @ApiProperty()
+  @IsString({ message: 'Adresa trebuie să fie un șir de caractere!' })
+  adresa: string;
+}
+
+export class UniversitiesUpdateDto {
+  @ApiProperty()
+  @IsString({ message: 'Denumirea trebuie să fie un șir de caractere!' })
+  denumire: string;
+
+  @ApiProperty()
+  @IsString({ message: 'Adresa trebuie să fie un șir de caractere!' })
+  adresa: string;
+}
+
 export class UniversitiesDto {
   @ApiProperty()
   @IsInt({ message: 'ID-ul trebuie să fie un număr întreg!' })

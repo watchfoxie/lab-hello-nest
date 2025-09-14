@@ -9,7 +9,11 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UniversitiesDto } from './universities.dto';
+import {
+  UniversitiesDto,
+  UniversitiesCreateDto,
+  UniversitiesUpdateDto,
+} from './universities.dto';
 import { UniversitiesService } from './universities.service';
 import { ValidationPipe } from '../../pipes/validation.pipe';
 import { ApiStandardResponses } from '../../common/swagger/swagger-responses.util';
@@ -24,7 +28,18 @@ export class UniversitiesController {
   @ApiResponse({ type: [UniversitiesDto] })
   @ApiStandardResponses([UniversitiesDto])
   findAll() {
-    return this.universitiesService.findAll();
+    const universities = this.universitiesService.findAll();
+    if (universities.length === 0) {
+      return {
+        message: 'Nu sunt universități adăugate în baza de date!',
+        universities: [],
+      };
+    } else {
+      return {
+        message: 'Lista universităților:',
+        universities: [...universities],
+      };
+    }
   }
 
   @Get(':id')
@@ -32,7 +47,17 @@ export class UniversitiesController {
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.universitiesService.findOne(id);
+    const university = this.universitiesService.findOne(id);
+    if (!university) {
+      return {
+        message: 'Nu există universitate cu id-ul specificat!',
+        university: null,
+      };
+    }
+    return {
+      message: 'Universitatea găsită:',
+      university,
+    };
   }
 
   @Post()
@@ -40,7 +65,10 @@ export class UniversitiesController {
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   @ApiResponse({ status: 201, description: 'Universitate adăugată cu succes' })
-  create(@Body(new ValidationPipe()) dto: UniversitiesDto) {
+  create(
+    @Body(new ValidationPipe())
+    dto: UniversitiesCreateDto,
+  ) {
     return this.universitiesService.create(dto);
   }
 
@@ -48,14 +76,43 @@ export class UniversitiesController {
   @ApiOperation({ summary: 'Update university' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UniversitiesDto) {
-    return this.universitiesService.update(id, dto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UniversitiesUpdateDto,
+  ) {
+    const updated = this.universitiesService.update(id, dto);
+    if (!updated) {
+      return {
+        message: 'Nu există universitate cu id-ul specificat!',
+        university: null,
+      };
+    }
+    return {
+      message: 'Universitate actualizată cu succes!',
+      university: updated,
+    };
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete university' })
   @ApiStandardResponses()
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.universitiesService.remove(id);
+    const removed = this.universitiesService.remove(id);
+    if (!removed) {
+      return {
+        message: 'Nu există universitate cu id-ul specificat!',
+        university: null,
+      };
+    }
+    if (typeof removed === 'string') {
+      return {
+        message: removed,
+        university: null,
+      };
+    }
+    return {
+      message: 'Universitate ștearsă cu succes!',
+      university: removed,
+    };
   }
 }
