@@ -20,7 +20,17 @@ services:
     networks:
       - backend-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,7 +38,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: "0.50"
           memory: 512M
 
   db-administering:
@@ -54,7 +64,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
 # Volum pentru asigurarea persistenței datelor MySQL
 volumes:
@@ -64,7 +74,6 @@ volumes:
 networks:
   backend-net:
     driver: bridge
-
 # -------------------------------------------------------------
 # Documentație rapidă
 # -------------------------------------------------------------
