@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   Delete,
+  HttpStatus,
+  HttpException,
+  Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import {
@@ -15,47 +18,77 @@ import {
   UniversitiesUpdateDto,
 } from './universities.dto';
 import { UniversitiesService } from './universities.service';
-import {
-  BaseController,
-  ApiResponseMessages,
-} from '../../common/base/base.controller';
 import { ValidationPipe } from '../../pipes/validation.pipe';
 import { ApiStandardResponses } from '../../common/swagger/swagger-responses.util';
 
-const UNIVERSITIES_MESSAGES: ApiResponseMessages = {
-  noEntitiesFound: 'Nu sunt universități adăugate în baza de date!',
-  entitiesList: 'Lista universităților:',
-  entityNotFound: 'Nu există universitate cu id-ul specificat!',
-  entityFound: 'Universitatea găsită:',
-  entityUpdated: 'Universitate actualizată cu succes!',
-  entityDeleted: 'Universitate ștearsă cu succes!',
-};
-
 @ApiTags('universities')
 @Controller('universities')
-export class UniversitiesController extends BaseController<
-  UniversitiesDto,
-  UniversitiesCreateDto,
-  UniversitiesUpdateDto
-> {
-  constructor(private readonly universitiesService: UniversitiesService) {
-    super(universitiesService, UNIVERSITIES_MESSAGES, 'universities');
-  }
+export class UniversitiesController {
+  private readonly logger = new Logger(UniversitiesController.name);
+
+  constructor(private readonly universitiesService: UniversitiesService) {}
 
   @Get()
   @ApiOperation({ summary: 'Afișați lista tuturor universităților' })
   @ApiResponse({ type: [UniversitiesDto] })
   @ApiStandardResponses([UniversitiesDto])
-  findAll() {
-    return super.findAll();
+  async findAll() {
+    try {
+      const universities = await this.universitiesService.findAll();
+
+      if (universities.length === 0) {
+        return {
+          status: 200,
+          message: 'Nu sunt universități adăugate în baza de date!',
+          data: universities,
+        };
+      }
+
+      return {
+        status: 200,
+        message: 'Lista universităților:',
+        data: universities,
+      };
+    } catch (error) {
+      this.logger.error('Eroare la încărcarea universităților', error);
+      throw new HttpException(
+        'Eroare internă de server',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Afișați o universitate după ID' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return super.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const university = await this.universitiesService.findOne(id);
+
+      if (!university) {
+        throw new HttpException(
+          'Nu există universitate cu id-ul specificat!',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        status: 200,
+        message: 'Universitatea găsită:',
+        data: university,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(`Eroare la găsirea universității cu ID ${id}`, error);
+      throw new HttpException(
+        'Eroare internă de server',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Post()
@@ -63,25 +96,97 @@ export class UniversitiesController extends BaseController<
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
   @ApiResponse({ status: 201, description: 'Universitate adăugată cu succes' })
-  create(@Body(new ValidationPipe()) dto: UniversitiesCreateDto) {
-    return super.create(dto);
+  async create(@Body(new ValidationPipe()) dto: UniversitiesCreateDto) {
+    try {
+      const university = await this.universitiesService.create(dto);
+
+      return {
+        status: 201,
+        message: `Universitatea "${dto.denumire}" a fost adăugată cu succes!`,
+        data: university,
+      };
+    } catch (error) {
+      this.logger.error('Eroare la crearea universității', error);
+      throw new HttpException(
+        'Eroare la crearea universității',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Actualizați informațiile unei universități' })
   @ApiResponse({ type: UniversitiesDto })
   @ApiStandardResponses(UniversitiesDto)
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) dto: UniversitiesUpdateDto,
   ) {
-    return super.update(id, dto);
+    try {
+      const university = await this.universitiesService.update(id, dto);
+
+      if (!university) {
+        throw new HttpException(
+          'Nu există universitate cu id-ul specificat!',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        status: 200,
+        message: 'Universitate actualizată cu succes!',
+        data: university,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(
+        `Eroare la actualizarea universității cu ID ${id}`,
+        error,
+      );
+      throw new HttpException(
+        'Eroare la actualizarea universității',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Ștergeți o universitate' })
   @ApiStandardResponses()
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return super.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const result = await this.universitiesService.remove(id);
+
+      if (!result) {
+        throw new HttpException(
+          'Nu există universitate cu id-ul specificat!',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      // Dacă rezultatul este un string, înseamnă că este un mesaj de eroare
+      if (typeof result === 'string') {
+        throw new HttpException(result, HttpStatus.CONFLICT);
+      }
+
+      return {
+        status: 200,
+        message: 'Universitate ștearsă cu succes!',
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(`Eroare la ștergerea universității cu ID ${id}`, error);
+      throw new HttpException(
+        'Eroare la ștergerea universității',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

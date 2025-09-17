@@ -15,7 +15,7 @@ export function ApiStandardResponses(type?: Type<any> | [Type<any>]) {
       description: HTTP_STATUS_CODES[status],
     };
 
-    // Adaugăm tipul pentru răspunsurile de succes
+    // Adaug tipul pentru răspunsurile de succes
     if (type && (status === 200 || status === 201)) {
       config.type = type;
     }
