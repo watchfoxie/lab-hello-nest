@@ -1,13 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { IsInt, IsString, MinLength, MaxLength } from 'class-validator';
+import { ERROR_MESSAGES } from '../../common/constants/messages.constants';
 
 export class StudentsCreateDto {
   @ApiProperty()
   @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   nume: string;
 
   @ApiProperty()
   @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   prenume: string;
 
   @ApiProperty()
@@ -16,20 +21,28 @@ export class StudentsCreateDto {
 
   @ApiProperty()
   @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   facultate: string;
 
   @ApiProperty()
   @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   specialitate: string;
 }
 
 export class StudentsUpdateDto {
   @ApiProperty()
   @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   nume: string;
 
   @ApiProperty()
   @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   prenume: string;
 
   @ApiProperty()
@@ -38,10 +51,14 @@ export class StudentsUpdateDto {
 
   @ApiProperty()
   @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   facultate: string;
 
   @ApiProperty()
   @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   specialitate: string;
 }
 
@@ -52,10 +69,14 @@ export class StudentsDto {
 
   @ApiProperty()
   @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   nume: string;
 
   @ApiProperty()
   @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   prenume: string;
 
   @ApiProperty()
@@ -64,20 +85,28 @@ export class StudentsDto {
 
   @ApiProperty()
   @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   facultate: string;
 
   @ApiProperty()
   @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   specialitate: string;
 }
 
 export class UniversityInfoDto {
   @ApiProperty()
   @IsString({ message: 'Denumirea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   denumire: string;
 
   @ApiProperty()
   @IsString({ message: 'Adresa trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   adresa: string;
 }
 
@@ -88,10 +117,14 @@ export class StudentWithUniversityDto {
 
   @ApiProperty()
   @IsString({ message: 'Numele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   nume: string;
 
   @ApiProperty()
   @IsString({ message: 'Prenumele trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   prenume: string;
 
   @ApiProperty()
@@ -100,10 +133,14 @@ export class StudentWithUniversityDto {
 
   @ApiProperty()
   @IsString({ message: 'Facultatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   facultate: string;
 
   @ApiProperty()
   @IsString({ message: 'Specialitatea trebuie să fie un șir de caractere!' })
+  @MinLength(2, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
+  @MaxLength(25, { message: ERROR_MESSAGES.VALIDATION_LENGTH })
   specialitate: string;
 
   @ApiProperty({ type: UniversityInfoDto })

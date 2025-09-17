@@ -41,6 +41,7 @@ export class ValidationPipe implements PipeTransform<unknown> {
 
   private formatSingleError(error: ValidationError): string {
     const constraints = Object.values(error.constraints ?? {});
-    return `${constraints.join(', ')}`;
+    const uniqueConstraints = Array.from(new Set(constraints));
+    return uniqueConstraints.join(', ');
   }
 }
