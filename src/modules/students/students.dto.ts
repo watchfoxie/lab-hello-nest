@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsString, MinLength, MaxLength } from 'class-validator';
-import { ERROR_MESSAGES } from 'src/common/constants/messages.constants';
+import { ERROR_MESSAGES } from '../../common/constants/messages.constants';
 
 export class StudentsCreateDto {
   @ApiProperty()

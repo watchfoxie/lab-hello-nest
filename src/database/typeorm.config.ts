@@ -21,9 +21,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       // Configurări MySQL specifice pentru a evita erorile de conexiune
       extra: {
         connectionLimit: 10,
-        acquireTimeout: 60000,
-        timeout: 60000,
-        reconnect: true,
+        //acquireTimeout: 60000,
+        //timeout: 60000,
+        //reconnect: true,
       },
     };
   }
