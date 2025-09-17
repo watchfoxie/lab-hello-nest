@@ -4,6 +4,8 @@ export const ERROR_MESSAGES = {
   UNIVERSITY_NOT_FOUND: 'Universitatea nu există, fie ați greșit id-ul asociat',
   STUDENT_NOT_FOUND: 'Nu există student cu id-ul specificat!',
   VALIDATION_FAILED: 'Validarea a eșuat',
+  VALIDATION_LENGTH:
+    'Lungimea șirului de caractere este invalidă (min. 2, max. 25)',
 } as const;
 
 export const SUCCESS_MESSAGES = {
