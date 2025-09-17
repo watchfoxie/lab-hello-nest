@@ -23,10 +23,12 @@ export class ValidationPipe implements PipeTransform<unknown> {
     const errors = await validate(object);
 
     if (errors.length > 0) {
-      const messages = this.formatValidationErrors(errors);
-      throw new BadRequestException(
-        `${ERROR_MESSAGES.VALIDATION_FAILED}: ${messages}`,
-      );
+      const formattedErrors = errors.map((error) => ({
+        field: error.property,
+        message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${this.formatSingleError(error)}`,
+      }));
+
+      throw new BadRequestException(formattedErrors);
     }
 
     return value;
@@ -37,13 +39,8 @@ export class ValidationPipe implements PipeTransform<unknown> {
     return !excludedTypes.includes(metatype as any);
   }
 
-  private formatValidationErrors(errors: ValidationError[]): string {
-    return errors.map((error) => this.formatSingleError(error)).join('; ');
-  }
-
   private formatSingleError(error: ValidationError): string {
-    const property = error.property.toUpperCase();
     const constraints = Object.values(error.constraints ?? {});
-    return `câmp ${property}: ${constraints.join(', ')}`;
+    return `${constraints.join(', ')}`;
   }
 }
