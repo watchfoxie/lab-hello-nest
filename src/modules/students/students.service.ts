@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  Logger,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import {
@@ -11,6 +17,7 @@ import {
 import { StudentEntity } from './student.entity';
 import { UniversitiesService } from '../universities/universities.service';
 //import { UniversityEntity } from '../universities/university.entity';
+import { HTTP_STATUS_CODES } from '../../common/status-codes/http-status-codes';
 
 @Injectable()
 export class StudentsService {
@@ -66,8 +73,22 @@ export class StudentsService {
         dto.id_universitate,
       );
       if (!universityExists) {
-        await queryRunner.rollbackTransaction();
-        throw new BadRequestException('Universitatea specificată nu există!');
+        // Arunc un răspuns de validare personalizat conform cerinței
+        const statusCode = HttpStatus.UNPROCESSABLE_ENTITY; // 422
+        throw new HttpException(
+          {
+            message: [
+              {
+                field: 'id_universitate',
+                message:
+                  'validarea a eșuat: universitatea nu există, fie ați greșit id-ul asociat',
+              },
+            ],
+            error: HTTP_STATUS_CODES[statusCode],
+            statusCode,
+          },
+          statusCode,
+        );
       }
 
       // Creez studentul
@@ -89,7 +110,6 @@ export class StudentsService {
           queryRunner,
         );
       if (!incrementSuccess) {
-        await queryRunner.rollbackTransaction();
         throw new BadRequestException(
           'Eroare la actualizarea numărului de studenți',
         );
@@ -109,9 +129,14 @@ export class StudentsService {
 
       return this.entityToDto(studentWithUniversity!);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
 
-      if (error instanceof BadRequestException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof HttpException
+      ) {
         throw error;
       }
 
@@ -146,7 +171,6 @@ export class StudentsService {
         dto.id_universitate,
       );
       if (!universityExists) {
-        await queryRunner.rollbackTransaction();
         throw new BadRequestException('Universitatea specificată nu există!');
       }
 
@@ -194,7 +218,9 @@ export class StudentsService {
 
       return this.entityToDto(studentWithUniversity!);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
 
       if (error instanceof BadRequestException) {
         throw error;

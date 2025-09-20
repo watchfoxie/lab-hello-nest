@@ -107,7 +107,10 @@ export class StudentsController {
         data: student,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof HttpException
+      ) {
         throw error;
       }
 
