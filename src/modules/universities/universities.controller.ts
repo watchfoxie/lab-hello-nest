@@ -20,6 +20,7 @@ import {
 import { UniversitiesService } from './universities.service';
 import { ValidationPipe } from '../../pipes/validation.pipe';
 import { ApiStandardResponses } from '../../common/swagger/swagger-responses.util';
+import { ERROR_MESSAGES } from '../../common/constants/messages.constants';
 
 @ApiTags('universities')
 @Controller('universities')
@@ -72,8 +73,7 @@ export class UniversitiesController {
             message: [
               {
                 field: 'id',
-                message:
-                  'validarea a eșuat: nu există universitate cu id-ul specificat!',
+                message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.UNIVERSITY_NOT_FOUND}`,
               },
             ],
             error: 'Not Found',
@@ -137,7 +137,16 @@ export class UniversitiesController {
 
       if (!university) {
         throw new HttpException(
-          'Nu există universitate cu id-ul specificat!',
+          {
+            message: [
+              {
+                field: 'id',
+                message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.UNIVERSITY_NOT_FOUND}`,
+              },
+            ],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
           HttpStatus.NOT_FOUND,
         );
       }
@@ -172,7 +181,16 @@ export class UniversitiesController {
 
       if (!result) {
         throw new HttpException(
-          'Nu există universitate cu id-ul specificat!',
+          {
+            message: [
+              {
+                field: 'id',
+                message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.UNIVERSITY_NOT_FOUND}`,
+              },
+            ],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
           HttpStatus.NOT_FOUND,
         );
       }

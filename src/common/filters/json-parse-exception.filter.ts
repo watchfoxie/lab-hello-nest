@@ -21,7 +21,7 @@ export class JsonParseExceptionFilter implements ExceptionFilter {
         message: [
           {
             field: fieldName,
-            message: ERROR_MESSAGES.JSON_SYNTAX_ERROR,
+            message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.JSON_SYNTAX_ERROR}`,
           },
         ],
         error: 'Bad Request',
