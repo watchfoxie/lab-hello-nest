@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, QueryFailedError } from 'typeorm';
+import { Repository, DataSource, QueryFailedError, QueryRunner } from 'typeorm';
 import {
   UniversitiesDto,
   UniversitiesCreateDto,
@@ -140,72 +140,51 @@ export class UniversitiesService {
   }
 
   async decrementStudentCount(universityId: number): Promise<boolean> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const university = await queryRunner.manager.findOneBy(UniversityEntity, {
-        id: universityId,
-      });
-      if (!university || university.numar_studenti <= 0) {
-        await queryRunner.rollbackTransaction();
-        return false;
-      }
-
-      university.numar_studenti -= 1;
-      await queryRunner.manager.save(university);
-
-      await queryRunner.commitTransaction();
-      this.logger.log(
-        `Numărul de studenți pentru universitatea ${universityId} a fost decrementat la ${university.numar_studenti}`,
-      );
-
-      return true;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      this.logger.error(
-        `Eroare la decrementarea numărului de studenți pentru universitatea ${universityId}`,
-        error,
-      );
-      return false;
-    } finally {
-      await queryRunner.release();
-    }
+    return this._changeStudentCount(universityId, -1);
   }
 
   async incrementStudentCount(universityId: number): Promise<boolean> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    return this._changeStudentCount(universityId, 1);
+  }
 
+  // Modifică numărul de studenți pentru universitate folosind un QueryRunner extern dacă este furnizat.
+  async _changeStudentCount(
+    universityId: number,
+    delta: number,
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    let runner = queryRunner;
+    let ownTransaction = false;
+    if (!runner) {
+      runner = this.dataSource.createQueryRunner();
+      await runner.connect();
+      await runner.startTransaction();
+      ownTransaction = true;
+    }
     try {
-      const university = await queryRunner.manager.findOneBy(UniversityEntity, {
+      const university = await runner.manager.findOneBy(UniversityEntity, {
         id: universityId,
       });
-      if (!university) {
-        await queryRunner.rollbackTransaction();
+      if (!university || (delta < 0 && university.numar_studenti <= 0)) {
+        if (ownTransaction) await runner.rollbackTransaction();
         return false;
       }
-
-      university.numar_studenti += 1;
-      await queryRunner.manager.save(university);
-
-      await queryRunner.commitTransaction();
+      university.numar_studenti += delta;
+      await runner.manager.save(university);
+      if (ownTransaction) await runner.commitTransaction();
       this.logger.log(
-        `Numărul de studenți pentru universitatea ${universityId} a fost incrementat la ${university.numar_studenti}`,
+        `Numărul de studenți pentru universitatea ${universityId} a fost modificat la ${university.numar_studenti}`,
       );
-
       return true;
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (ownTransaction) await runner.rollbackTransaction();
       this.logger.error(
-        `Eroare la incrementarea numărului de studenți pentru universitatea ${universityId}`,
+        `Eroare la modificarea numărului de studenți pentru universitatea ${universityId}`,
         error,
       );
       return false;
     } finally {
-      await queryRunner.release();
+      if (ownTransaction) await runner.release();
     }
   }
 

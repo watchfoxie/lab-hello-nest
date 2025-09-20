@@ -81,10 +81,12 @@ export class StudentsService {
 
       const savedStudent = await queryRunner.manager.save(student);
 
-      // Incrementez numărul de studenți în universitate
+      // Incrementez numărul de studenți în universitate folosind același queryRunner
       const incrementSuccess =
-        await this.universitiesService.incrementStudentCount(
+        await this.universitiesService._changeStudentCount(
           dto.id_universitate,
+          1,
+          queryRunner,
         );
       if (!incrementSuccess) {
         await queryRunner.rollbackTransaction();
