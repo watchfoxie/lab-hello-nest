@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from './pipes/validation.pipe';
-import { JsonParseExceptionFilter } from './common/filters/json-parse-exception.filter';
+import { jsonBodyParserErrorHandler } from './common/middlewares/json-body-parser-error.middleware';
 import { APP_CONFIG } from './common/config/app.config';
 
 async function bootstrap() {
@@ -23,8 +23,8 @@ async function bootstrap() {
   // Configurare globală pentru validare
   app.useGlobalPipes(new ValidationPipe());
 
-  // Configurare globală pentru filtrarea erorilor de parsare JSON
-  app.useGlobalFilters(new JsonParseExceptionFilter());
+  // Gestionare erori de parsare JSON (malformed JSON) înainte de pipes/validators
+  app.use(jsonBodyParserErrorHandler);
 
   // Pornire server
   await app.listen(APP_CONFIG.server.port);
