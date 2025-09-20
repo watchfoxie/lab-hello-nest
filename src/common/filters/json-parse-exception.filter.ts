@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Catch,
   ExceptionFilter,
+  HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import type { Response } from 'express';
@@ -22,7 +23,7 @@ export class JsonParseExceptionFilter implements ExceptionFilter {
 
     if (!isJsonError) {
       // Pas prin: păstrează comportamentul original Nest pentru erorile care nu sunt de parsare JSON
-      if (exception instanceof BadRequestException) {
+      if (exception instanceof HttpException) {
         const status = exception.getStatus();
         const body = exception.getResponse();
         return res.status(status).json(body);
