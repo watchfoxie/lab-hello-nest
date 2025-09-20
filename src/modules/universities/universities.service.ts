@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, QueryFailedError, QueryRunner } from 'typeorm';
 import {
@@ -7,6 +7,7 @@ import {
   UniversitiesUpdateDto,
 } from './universities.dto';
 import { UniversityEntity } from './university.entity';
+import { ERROR_MESSAGES } from 'src/common/constants/messages.constants';
 
 @Injectable()
 export class UniversitiesService {
@@ -91,26 +92,34 @@ export class UniversitiesService {
     }
   }
 
-  async remove(id: number): Promise<UniversitiesDto | string | undefined> {
+  async remove(id: number): Promise<UniversitiesDto | undefined> {
+    // Verific mai întâi dacă universitatea există și are studenți
+    const university = await this.universitiesRepository.findOneBy({ id });
+    if (!university) {
+      return undefined;
+    }
+
+    if (university.numar_studenti > 0) {
+      throw new HttpException(
+        {
+          message: [
+            {
+              field: 'id',
+              message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.UNIVERSITY_HAS_STUDENTS}`,
+            },
+          ],
+          error: 'Conflict',
+          statusCode: HttpStatus.CONFLICT,
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      const university = await queryRunner.manager.findOneBy(UniversityEntity, {
-        id,
-      });
-      if (!university) {
-        await queryRunner.rollbackTransaction();
-        return undefined;
-      }
-
-      // Verific dacă universitatea are studenți
-      if (university.numar_studenti > 0) {
-        await queryRunner.rollbackTransaction();
-        return 'Universitatea nu poate fi ștearsă deoarece are studenți asociați.';
-      }
-
       const universityToReturn = this.entityToDto(university);
       await queryRunner.manager.remove(university);
 
@@ -129,7 +138,19 @@ export class UniversitiesService {
         this.logger.warn(
           `Încercare de ștergere a universității cu ID ${id} care are studenți asociați`,
         );
-        return 'Universitatea nu poate fi ștearsă deoarece are studenți asociați.';
+        throw new HttpException(
+          {
+            message: [
+              {
+                field: 'id',
+                message: `${ERROR_MESSAGES.VALIDATION_FAILED}: ${ERROR_MESSAGES.UNIVERSITY_HAS_STUDENTS}`,
+              },
+            ],
+            error: 'Conflict',
+            statusCode: HttpStatus.CONFLICT,
+          },
+          HttpStatus.CONFLICT,
+        );
       }
 
       this.logger.error(`Eroare la ștergerea universității cu ID ${id}`, error);

@@ -195,11 +195,6 @@ export class UniversitiesController {
         );
       }
 
-      // Dacă rezultatul este un string, înseamnă că este un mesaj de eroare
-      if (typeof result === 'string') {
-        throw new HttpException(result, HttpStatus.CONFLICT);
-      }
-
       return {
         status: 200,
         message: 'Universitate ștearsă cu succes!',
