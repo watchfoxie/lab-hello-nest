@@ -68,7 +68,17 @@ export class UniversitiesController {
 
       if (!university) {
         throw new HttpException(
-          'Nu există universitate cu id-ul specificat!',
+          {
+            message: [
+              {
+                field: 'id',
+                message:
+                  'validarea a eșuat: nu există universitate cu id-ul specificat!',
+              },
+            ],
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
           HttpStatus.NOT_FOUND,
         );
       }
