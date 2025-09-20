@@ -41,6 +41,14 @@ export class ValidationPipe implements PipeTransform<unknown> {
 
   private formatSingleError(error: ValidationError): string {
     const constraints = Object.values(error.constraints ?? {});
+    // Dacă există o eroare de tip, returnează doar mesajul de tip
+    const typeError = constraints.find((msg) =>
+      msg.includes(ERROR_MESSAGES.VALIDATION_STRING),
+    );
+    if (typeError) {
+      return typeError;
+    }
+    // Altfel, returnează toate mesajele unice
     const uniqueConstraints = Array.from(new Set(constraints));
     return uniqueConstraints.join(', ');
   }

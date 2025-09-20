@@ -103,7 +103,7 @@ export class StudentsController {
 
       return {
         status: 201,
-        message: `Studentul "${dto.nume} ${dto.prenume}" a fost adăugat cu succes!`,
+        message: `Studentul ${dto.nume} ${dto.prenume} a fost adăugat cu succes!`,
         data: student,
       };
     } catch (error) {

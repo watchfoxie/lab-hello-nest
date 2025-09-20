@@ -6,6 +6,9 @@ export const ERROR_MESSAGES = {
   VALIDATION_FAILED: 'validarea a eșuat',
   VALIDATION_LENGTH:
     'lungimea șirului de caractere este invalidă (min. 2, max. 25)',
+  VALIDATION_STRING: 'trebuie să fie un șir de caractere',
+  JSON_SYNTAX_ERROR:
+    'validarea a eșuat: valoarea proprietății prezintă erori de sintaxă',
 } as const;
 
 export const SUCCESS_MESSAGES = {

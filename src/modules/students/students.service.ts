@@ -96,7 +96,7 @@ export class StudentsService {
       await queryRunner.commitTransaction();
 
       this.logger.log(
-        `Studentul "${dto.nume} ${dto.prenume}" a fost creat cu ID ${savedStudent.id}`,
+        `Studentul ${dto.nume} ${dto.prenume} a fost creat cu ID ${savedStudent.id}`,
       );
 
       // Încarc studentul cu relația universitate pentru răspuns

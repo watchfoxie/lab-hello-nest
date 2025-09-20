@@ -54,7 +54,7 @@ export class UniversitiesService {
       const savedUniversity =
         await this.universitiesRepository.save(university);
       this.logger.log(
-        `Universitatea "${dto.denumire}" a fost creată cu ID ${savedUniversity.id}`,
+        `Universitatea ${dto.denumire} a fost creată cu ID ${savedUniversity.id}`,
       );
 
       return this.entityToDto(savedUniversity);

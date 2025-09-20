@@ -102,7 +102,7 @@ export class UniversitiesController {
 
       return {
         status: 201,
-        message: `Universitatea "${dto.denumire}" a fost adăugată cu succes!`,
+        message: `Universitatea ${dto.denumire} a fost adăugată cu succes!`,
         data: university,
       };
     } catch (error) {
